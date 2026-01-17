@@ -33,9 +33,10 @@
 \fancypagestyle{logoheader}{
     \fancyhf{} % clear all fields
     \renewcommand{\headrulewidth}{0pt} % Remove the horizontal line
-    \fancyhead[C]{\includegraphics[width=0.25\textwidth]{images/logo.png}}
+    \fancyhead[C]{\includegraphics[width=0.25\textwidth]{logo.png}}
     \fancyfoot[C]{\thepage}
 }
+
 
 % --- Table of Contents Customization ---
 \renewcommand{\contentsname}{Table of Contents}
@@ -67,33 +68,49 @@
 }
 % --- The Recipe Macro ---
 % \recipe{Title}{Author}{Abstract}{IngredientsCmd}{InstructionsCmd}{Notes}{Image}
-\newcommand{\recipe}[7]{
+\usepackage{etoolbox}
+
+% #1: Name, #2: Submitter, #3: Abstract, #4: Ingredients, 
+% #5: Instructions, #6: Notes, #7: Image, #8: Category
+\newcommand{\recipe}[8]{
     \newpage
     \phantomsection
+    
+    % --- TOC Logic: Grouping by Category ---
+    % If this category hasn't been added to the TOC yet, add it now.
+    \ifcsdef{cat#8}{}{%
+        \addcontentsline{toc}{part}{#8}% We use 'part' or 'chapter' style for the Category header
+        \csdef{cat#8}{true}% Mark this category as "already in TOC"
+    }
+    
+    % Add the specific recipe under that category
+    
     \addcontentsline{toc}{section}{#1 \dotfill \textit{Submitted by #2}} 
+    \cftpagenumbersoff{section}
+    \cftpagenumbersoff{part}
 
+    % --- Visual Layout ---
     {\noindent\Huge\fontfamily{CormorantGaramond-LF}\selectfont #1 \par}
     {\noindent\large\textit{Submitted by #2} \par}
+    \vspace{0.5em}
+    {\noindent\small\textbf{Category:} #8 \par} % Optional: show category on page
     \vspace{1em}
 
     \ifstrempty{#7}{
-        % No image: just print content
         #3 #4 #5
     }{
-        % Image exists: Use side-by-side minipages
         \noindent\begin{minipage}[t]{0.53\textwidth}
             \ifstrempty{#3}{}{\noindent \textbf{Abstract}: #3 \par \medskip}
-            #4 % Ingredients
+            #4 
         \end{minipage}
         \hfill
         \begin{minipage}[t]{0.43\textwidth}
-            \vspace{-8pt} % Aligns top of image with top of text
+            \vspace{-8pt} 
             \centering
             \includegraphics[width=\linewidth]{#7}
         \end{minipage}
-
         \medskip
-        #5 % Instructions (will flow below the image/ingredients block)
+        #5 
     }
 
     \ifstrempty{#6}{}{\subsection*{Notes} #6}

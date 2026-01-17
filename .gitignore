@@ -2,9 +2,5 @@
 !.gitignore
 !main.tex
 !main.pdf
-!foreword.tex
-!anthology.cls
-!images/
-!images/*
-!recipes/
-!recipes/*
+!editions/
+!editions/*

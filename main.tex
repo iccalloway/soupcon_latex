@@ -1,15 +1,18 @@
 \documentclass{anthology}
+\cftpagenumbersoff{part}
+
+% Define the path to this specific edition's content
+\newcommand{\contentpath}{editions/soupcon_2024}
+
+% Tell LaTeX where to look for images automatically
+\graphicspath{{\contentpath/images/}}
+
 \begin{document}
 
-
-\input{foreword.tex}
+\input{\contentpath/foreword.tex}
 
 \tableofcontents
 
-\recipeCategory{Mediterranean}
-\input{recipes/avoglemono.tex}
-
-\recipeCategory{Meaty Broths}
-\input{recipes/caldo_verde.tex}
+\input{\contentpath/recipe_manifest.tex}
 
 \end{document}
