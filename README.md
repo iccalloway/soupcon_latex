@@ -6,6 +6,7 @@ A modular LaTeX framework designed to generate beautiful culinary proceedings. T
 
 The repository is organized to allow multiple "editions" to coexist while sharing the same core design.
 
+```
 .
 ├── main.tex                        # Entry point; sets the current edition path
 ├── anthology.cls                   # Core style definitions and \recipe logic
@@ -16,6 +17,7 @@ The repository is organized to allow multiple "editions" to coexist while sharin
         ├── recipes/                # Individual .tex recipe files
         │   └──receipe_manifest.tex # Manifest file importing all recipes in order
         └── images/                 # Recipe photos and edition-specific assets
+```
 
 ---
 
