@@ -33,7 +33,7 @@
 \fancypagestyle{logoheader}{
     \fancyhf{} % clear all fields
     \renewcommand{\headrulewidth}{0pt} % Remove the horizontal line
-    \fancyhead[C]{\includegraphics[width=0.25\textwidth]{logo.png}}
+    \fancyhead[C]{\includegraphics[width=0.5\textwidth]{logo.png}}
     \fancyfoot[C]{\thepage}
 }
 
