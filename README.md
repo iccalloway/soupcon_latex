@@ -30,6 +30,7 @@ Open `main.tex` and update the `\editionname` variable to match your folder name
 ### 2. Adding a Recipe
 Create a .tex file in your edition's recipes/ folder. Use the 8-argument \recipe command:
 
+```
 \recipe{Recipe Name}            % #1 Name
        {Submitter Name}         % #2 Submitter
        {Abstract text...}       % #3 Short story/blurb
@@ -38,6 +39,7 @@ Create a .tex file in your edition's recipes/ folder. Use the 8-argument \recipe
        {Optional notes...}      % #6 Notes (leave {} if empty)
        {filename.jpg}           % #7 Image filename (no path needed)
        {Category}               % #8 TOC Group (e.g., Soups, Mains)
+```
 
 ### 3. Updating the Manifest
 To include the recipe in the PDF, add it to editions/[edition_name]/recipe_manifest.tex. The order of \input commands in this file determines the order in the book.
