@@ -93,7 +93,6 @@
     {\noindent\Huge\fontfamily{CormorantGaramond-LF}\selectfont #1 \par}
     {\noindent\large\textit{Submitted by #2} \par}
     \vspace{0.5em}
-    {\noindent\small\textbf{Category:} #8 \par} % Optional: show category on page
     \vspace{1em}
 
     \ifstrempty{#7}{
