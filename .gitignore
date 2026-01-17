@@ -1,6 +1,5 @@
-*
-!.gitignore
-!main.tex
-!main.pdf
-!editions/
-!editions/*
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
