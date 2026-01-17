@@ -1,6 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{anthology}[2026/01/16 Recipe Anthology Class]
-\LoadClass[11pt]{article}
+\LoadClass[12pt]{article}
 
 % --- Packages ---
 \RequirePackage[utf8]{inputenc}
@@ -14,6 +14,28 @@
 \RequirePackage{CormorantGaramond}
 \RequirePackage{etoolbox}
 \RequirePackage{tocloft}
+\RequirePackage{fancyhdr}
+\RequirePackage{geometry}
+\RequirePackage{hyperref}
+\RequirePackage{xcolor} % Required for defining colors
+
+\hypersetup{
+    colorlinks=true,    % Colors the text of the link instead of drawing a box
+    linkcolor=black,     % Internal links (TOC) - usually best kept black for print
+    urlcolor=blue,      % Web and email links will be blue
+    citecolor=blue      % Citations will be blue
+}
+
+% Adjust geometry to make room for a header
+\geometry{margin=1in, headheight=60pt, top=1.2in}
+
+% Define the header style with the logo
+\fancypagestyle{logoheader}{
+    \fancyhf{} % clear all fields
+    \renewcommand{\headrulewidth}{0pt} % Remove the horizontal line
+    \fancyhead[C]{\includegraphics[width=0.25\textwidth]{images/logo.png}}
+    \fancyfoot[C]{\thepage}
+}
 
 % --- Table of Contents Customization ---
 \renewcommand{\contentsname}{Table of Contents}
@@ -24,61 +46,56 @@
 
 % Category Header for TOC
 \newcommand{\recipeCategory}[1]{
-    \addtocontents{toc}{\vspace{1.5em}\noindent\textbf{\large #1}\par\vspace{0.5em}}
+    \addtocontents{toc}{\vspace{1.5em}\noindent{\large #1}\par\vspace{0.5em}}
 }
 
 % --- Custom List Formatting ---
-% Underlined headers as requested
 \newcommand{\ingredients}[1]{
     \ifstrempty{#1}{}{
         \subsection*{\underline{Ingredients}}
-        \begin{itemize}[noitemsep, leftmargin=1.2em] #1 \end{itemize}
+        % Use leftmargin=* to remove the extra indent
+        \begin{itemize}[noitemsep, leftmargin=*] #1 \end{itemize}
     }
 }
 
 \newcommand{\instructions}[1]{
     \ifstrempty{#1}{}{
         \subsection*{\underline{Instructions}}
-        \begin{enumerate}[noitemsep, leftmargin=1.2em] #1 \end{enumerate}
+        % Use leftmargin=* to remove the extra indent
+        \begin{enumerate}[noitemsep, leftmargin=*] #1 \end{enumerate}
     }
 }
-
 % --- The Recipe Macro ---
 % \recipe{Title}{Author}{Abstract}{IngredientsCmd}{InstructionsCmd}{Notes}{Image}
 \newcommand{\recipe}[7]{
     \newpage
     \phantomsection
-    % TOC Entry: Dish Name on left, Author on right
     \addcontentsline{toc}{section}{#1 \dotfill \textit{Submitted by #2}} 
 
-    % Title and Author Header
     {\noindent\Huge\fontfamily{CormorantGaramond-LF}\selectfont #1 \par}
     {\noindent\large\textit{Submitted by #2} \par}
     \vspace{1em}
 
-    % Wrapped Image Logic
-    \ifstrempty{#7}{}{
-        \begin{wrapfigure}{r}{0.45\textwidth}
+    \ifstrempty{#7}{
+        % No image: just print content
+        #3 #4 #5
+    }{
+        % Image exists: Use side-by-side minipages
+        \noindent\begin{minipage}[t]{0.53\textwidth}
+            \ifstrempty{#3}{}{\noindent \textbf{Abstract}: #3 \par \medskip}
+            #4 % Ingredients
+        \end{minipage}
+        \hfill
+        \begin{minipage}[t]{0.43\textwidth}
+            \vspace{-8pt} % Aligns top of image with top of text
             \centering
-            \vspace{-25pt} % Aligns image with the Title line
             \includegraphics[width=\linewidth]{#7}
-            \vspace{-10pt}
-        \end{wrapfigure}
+        \end{minipage}
+
+        \medskip
+        #5 % Instructions (will flow below the image/ingredients block)
     }
 
-    % Abstract/Description
-    \ifstrempty{#3}{}{
-        \noindent \textbf{Abstract}: #3 \par
-    }
-    
-    % Content Blocks (Ingredients and Instructions)
-    #4 
-    #5 
-
-    % Chef's Notes
-    \ifstrempty{#6}{}{
-        \subsection*{Chef's Notes}
-        #6
-    }
+    \ifstrempty{#6}{}{\subsection*{Notes} #6}
     \vfill
 }
