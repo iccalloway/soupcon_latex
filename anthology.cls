@@ -3,6 +3,7 @@
 \LoadClass[12pt]{article}
 
 % --- Packages ---
+\RequirePackage{wrapstuff}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[T1]{fontenc}
 \RequirePackage[margin=1in]{geometry}
@@ -72,46 +73,53 @@
 
 % #1: Name, #2: Submitter, #3: Abstract, #4: Ingredients, 
 % #5: Instructions, #6: Notes, #7: Image, #8: Category
+% Replace the Image/Content logic in your \recipe macro with this:
+% 1. Add this to your package list at the top of the .cls file
+\RequirePackage{wrapstuff}
+
+% 2. Update the \recipe macro logic
 \newcommand{\recipe}[8]{
     \newpage
     \phantomsection
     
-    % --- TOC Logic: Grouping by Category ---
-    % If this category hasn't been added to the TOC yet, add it now.
+    % --- TOC Logic (Kept from original) ---
     \ifcsdef{cat#8}{}{%
-        \addcontentsline{toc}{part}{#8}% We use 'part' or 'chapter' style for the Category header
-        \csdef{cat#8}{true}% Mark this category as "already in TOC"
+        \addcontentsline{toc}{part}{#8}%
+        \csdef{cat#8}{true}%
     }
-    
-    % Add the specific recipe under that category
-    
     \addcontentsline{toc}{section}{#1 \dotfill \textit{Submitted by #2}} 
     \cftpagenumbersoff{section}
     \cftpagenumbersoff{part}
 
-    % --- Visual Layout ---
-    {\noindent\Huge\fontfamily{CormorantGaramond-LF}\selectfont #1 \par}
-    {\noindent\large\textit{Submitted by #2} \par}
-    \vspace{0.5em}
-    \vspace{1em}
+    % --- Title and Author ---
+    \begin{samepage} % Keeps title and submitter together
+        {\noindent\Huge\fontfamily{CormorantGaramond-LF}\selectfont\raggedright #1\par}
+        {\noindent\large\textit{Submitted by #2} \par}
+    \end{samepage}
+    \vspace{1.5em}
 
+    % --- Visual Layout ---
     \ifstrempty{#7}{
-        #3 #4 #5
+        % Case: No image
+        \ifstrempty{#3}{}{\noindent \textbf{Abstract}: #3 \par \medskip}
+        #4 % Ingredients
+        #5 % Instructions
     }{
-        \noindent\begin{minipage}[t]{0.53\textwidth}
-            \ifstrempty{#3}{}{\noindent \textbf{Abstract}: #3 \par \medskip}
-            #4 
-        \end{minipage}
-        \hfill
-        \begin{minipage}[t]{0.43\textwidth}
-            \vspace{-8pt} 
+        % Case: With image - Using wrapstuff
+        % width=0.45\textwidth, type=figure, and placement=r (right)
+        \begin{wrapstuff}[width=0.45\textwidth, hsep=1em, vsep=0pt]
             \centering
             \includegraphics[width=\linewidth]{#7}
-        \end{minipage}
-        \medskip
-        #5 
+        \end{wrapstuff}
+
+        \ifstrempty{#3}{}{\noindent \textbf{Abstract}: #3 \par \medskip}
+        
+        #4 % Ingredients
+        
+        \vspace{1em}
+        #5 % Instructions (This will now wrap correctly even across pages)
     }
 
-    \ifstrempty{#6}{}{\subsection*{Notes} #6}
+    \ifstrempty{#6}{}{\medskip \subsection*{Notes} #6}
     \vfill
 }
