@@ -4,8 +4,11 @@
 
 % --- Packages ---
 \RequirePackage{wrapstuff}
-\RequirePackage[utf8]{inputenc}
-\RequirePackage[T1]{fontenc}
+\RequirePackage{fontspec}
+
+
+%\RequirePackage[utf8]{inputenc}
+%\RequirePackage[T1]{fontenc}
 \RequirePackage[margin=1in]{geometry}
 \RequirePackage{graphicx}
 \RequirePackage{enumitem}
@@ -19,6 +22,18 @@
 \RequirePackage{geometry}
 \RequirePackage{hyperref}
 \RequirePackage{xcolor} % Required for defining colors
+
+% Fonts
+\setmainfont{CormorantGaramond-Regular}[
+    Path = ./fonts/Cormorant_Garamond/static/,
+    Extension = .ttf,
+    BoldFont = CormorantGaramond-Bold,
+    ItalicFont = CormorantGaramond-Italic,
+    BoldItalicFont = CormorantGaramond-BoldItalic
+]
+
+\newfontfamily{\laofont}{Lao Sangam MN}[Script=Lao]
+
 
 \hypersetup{
     colorlinks=true,    % Colors the text of the link instead of drawing a box
@@ -39,6 +54,7 @@
 }
 
 
+
 % --- Table of Contents Customization ---
 \renewcommand{\contentsname}{Table of Contents}
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}} % Standardized dotted leaders
@@ -46,11 +62,36 @@
 \renewcommand{\cftsecpagefont}{\normalfont}
 \cftpagenumbersoff{section}                         % Hide page numbers
 
-% Category Header for TOC
-\newcommand{\recipeCategory}[1]{
-    \addtocontents{toc}{\vspace{1.5em}\noindent{\large #1}\par\vspace{0.5em}}
+% Helper for a variable horizontal grid (1 to 4 images)
+\newcommand{\photoGrid}[4]{
+    \begin{center}
+        \hfill
+        \ifstrempty{#1}{}{\begin{minipage}[b]{0.22\textwidth}\includegraphics[width=\linewidth]{#1}\end{minipage}\hfill}
+        \ifstrempty{#2}{}{\begin{minipage}[b]{0.22\textwidth}\includegraphics[width=\linewidth]{#2}\end{minipage}\hfill}
+        \ifstrempty{#3}{}{\begin{minipage}[b]{0.22\textwidth}\includegraphics[width=\linewidth]{#3}\end{minipage}\hfill}
+        \ifstrempty{#4}{}{\begin{minipage}[b]{0.22\textwidth}\includegraphics[width=\linewidth]{#4}\end{minipage}\hfill}
+    \end{center}
 }
-
+% Updated Category Page with Optional Images
+% Use {} in main.tex for any missing images
+\newcommand{\recipeCategory}[5]{
+    \newpage
+    \thispagestyle{empty}
+    \phantomsection
+    
+    \vspace*{\fill}
+    \begin{center}
+        {\Huge\fontfamily{CormorantGaramond-LF}\selectfont #1}
+        \par\vspace{3em}
+        
+        % Only draw the grid if at least one image is provided
+        \ifstrempty{#2#3#4#5}{}{
+            \photoGrid{#2}{#3}{#4}{#5}
+        }
+    \end{center}
+    \vspace*{\fill}
+    \newpage
+}
 % --- Custom List Formatting ---
 \newcommand{\ingredients}[1]{
     \ifstrempty{#1}{}{
@@ -78,7 +119,7 @@
 \RequirePackage{wrapstuff}
 
 % 2. Update the \recipe macro logic
-\newcommand{\recipe}[8]{
+\newcommand{\recipe}[9]{
     \newpage
     \phantomsection
     
@@ -87,16 +128,26 @@
         \addcontentsline{toc}{part}{#8}%
         \csdef{cat#8}{true}%
     }
-    \addcontentsline{toc}{section}{#1 \dotfill \textit{Submitted by #2}} 
+    
+    \addcontentsline{toc}{section}{%
+    {\fontfamily{CormorantGaramond-LF}\selectfont #1} % Forces Title to serif
+    \dotfill 
+    \textit{Submitted by #2}%
+}
+    
+    %\addcontentsline{toc}{section}{#1 \dotfill \textit{Submitted by #2}} 
     \cftpagenumbersoff{section}
     \cftpagenumbersoff{part}
 
-    % --- Title and Author ---
-    \begin{samepage} % Keeps title and submitter together
-        {\noindent\Huge\fontfamily{CormorantGaramond-LF}\selectfont\raggedright #1\par}
-        {\noindent\large\textit{Submitted by #2} \par}
-    \end{samepage}
-    \vspace{1.5em}
+% --- Title and Author on Page ---
+\begin{samepage} % Keeps title and submitter together
+    {\noindent\Huge\fontfamily{CormorantGaramond-LF}\selectfont\raggedright 
+        % Explicitly wrap the title/subtitle content to protect the font
+        {#1}\ifstrempty{#9}{}{ (#9)} 
+    \par}
+    {\noindent\large\fontfamily{CormorantGaramond-LF}\selectfont\textit{Submitted by #2} \par}
+\end{samepage}
+\vspace{1.5em}
 
     % --- Visual Layout ---
     \ifstrempty{#7}{
