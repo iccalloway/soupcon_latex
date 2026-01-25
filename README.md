@@ -39,6 +39,7 @@ Create a .tex file in your edition's recipes/ folder. Use the 8-argument \recipe
        {Optional notes...}      % #6 Notes (leave {} if empty)
        {filename.jpg}           % #7 Image filename (no path needed)
        {Category}               % #8 TOC Group (e.g., Soups, Mains)
+       {Subtitle}               % #8 Alternative name for recipe
 ```
 
 ### 3. Updating the Manifest
